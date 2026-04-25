@@ -20461,7 +20461,7 @@ function callGroq(apiKey, position, presentTo) {
   }).then(function(res){
     return res.json().then(function(data){
       if(!res.ok) throw new Error(data.error&&data.error.message?data.error.message:'API Error '+res.status);
-      var text=data.choices&&data.choices[0]&&data.choices[0].message?data.content[0].text:'';
+      var text = data.content && data.content[0] && data.content[0].type === 'text'? data.content[0].text : '';
       if(!text) throw new Error('AI 回傳空內容');
       var clean=text.replace(/```json|```/g,'').trim();
       var s=clean.indexOf('{'), e=clean.lastIndexOf('}');
