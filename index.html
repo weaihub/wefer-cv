@@ -20455,13 +20455,13 @@ function callGroq(apiKey, position, presentTo) {
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({
-      model:'claude-sonnet-4-20250514', temperature:0.1, max_tokens:4096,
+      model:'claude-sonnet-4-5', temperature:0.1, max_tokens:4096,
       messages:[{role:'system',content:prompt},{role:'user',content:userMsg}]
     })
   }).then(function(res){
     return res.json().then(function(data){
       if(!res.ok) throw new Error(data.error&&data.error.message?data.error.message:'API Error '+res.status);
-      var text=data.choices&&data.choices[0]&&data.choices[0].message?data.choices[0].message.content:'';
+      var text=data.choices&&data.choices[0]&&data.choices[0].message?data.content[0].text:'';
       if(!text) throw new Error('AI 回傳空內容');
       var clean=text.replace(/```json|```/g,'').trim();
       var s=clean.indexOf('{'), e=clean.lastIndexOf('}');
