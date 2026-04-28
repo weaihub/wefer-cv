@@ -515,9 +515,9 @@ async function downloadDocx() {
 function bul(text){
   return new Paragraph({
     spacing:{before:40,after:40},
-    indent:{left:480,hanging:360},
+    indent:{left:360,hanging:240},
     children:[
-      new TextRun({text:'• ',bold:false,size:20,font:{name:FONT,eastAsia:FONT}}),
+      new TextRun({text:'• ',size:20,font:{name:FONT,eastAsia:FONT}}),
       new TextRun({text:String(text||''),size:20,font:{name:FONT,eastAsia:FONT}})
     ]
   });
@@ -529,18 +529,24 @@ function bul(text){
 
   // ── EDUCATION ──
   ch.push(sec('EDUCATION'));
-  (cvData.education||[]).forEach(function(e,ei){
-    var isLast=(ei===((cvData.education||[]).length-1));
-    // Degree (red bold) + tab + School (gray) — on same line
-    ch.push(new Paragraph({
-      tabStops:[{type:TabStopType.RIGHT,position:CW}],
-      spacing:{before:ei===0?80:0,after:isLast?60:0},
-      children:[
-        new TextRun({text:String(e.degree||''),bold:true,color:'C0392B',size:20,font:{name:FONT,eastAsia:FONT}}),
-        new TextRun({text:'\t'+String(e.school||''),color:'7F7F7F',size:20,font:{name:FONT,eastAsia:FONT}})
-      ]
-    }));
-  });
+ (cvData.education||[]).forEach(function(e,ei){
+  var isLast=(ei===((cvData.education||[]).length-1));
+  ch.push(new Paragraph({
+    tabStops:[{type:TabStopType.RIGHT,position:CW}],
+    spacing:{before:ei===0?80:0,after:4},
+    children:[
+      new TextRun({text:String(e.degree||''),bold:true,color:'C0392B',size:20,font:{name:FONT,eastAsia:FONT}}),
+      new TextRun({text:'\t'+String(e.period||''),color:'7F7F7F',size:19,font:{name:FONT,eastAsia:FONT}})
+    ]
+  }));
+  // School 獨立一行，灰色斜體
+  ch.push(new Paragraph({
+    spacing:{before:0,after:isLast?60:20},
+    children:[
+      new TextRun({text:String(e.school||''),italics:true,color:'7F7F7F',size:19,font:{name:FONT,eastAsia:FONT}})
+    ]
+  }));
+});
   // Certification — italic gray
   if(cvData.certification&&cvData.certification.length>0){
     var certText=cvData.certification.join('  |  ');
@@ -551,35 +557,33 @@ function bul(text){
   }
 
   // ── EXPERIENCE ──
-  ch.push(sec('EXPERIENCE'));
-  (cvData.experience||[]).forEach(function(co,ci){
-    // Company header: bold black sz22, right-tab period gray sz19, EEEEEE bottom border
-    ch.push(new Paragraph({
-      tabStops:[{type:TabStopType.RIGHT,position:CW}],
-      spacing:{before:ci===0?0:160,after:4},
-      border:{bottom:{style:BorderStyle.SINGLE,color:'EEEEEE',size:2,space:2}},
-      children:[
-        new TextRun({text:String(co.company||''),bold:true,color:'000000',size:22,font:{name:FONT,eastAsia:FONT}}),
-        new TextRun({text:'\t'+String(co.period||''),color:'7F7F7F',size:19,font:{name:FONT,eastAsia:FONT}})
-      ]
-    }));
+(cvData.experience||[]).forEach(function(co,ci){
+  var singleRole = (co.roles||[]).length === 1;
+  ch.push(new Paragraph({
+    tabStops:[{type:TabStopType.RIGHT,position:CW}],
+    spacing:{before:ci===0?0:160,after:4},
+    border:{bottom:{style:BorderStyle.SINGLE,color:'EEEEEE',size:2,space:2}},
+    children:[
+      new TextRun({text:String(co.company||''),bold:true,color:'000000',size:22,font:{name:FONT,eastAsia:FONT}}),
+      // 只有一個role時不顯示company period
+      new TextRun({text: singleRole ? '' : '\t'+String(co.period||''),color:'7F7F7F',size:19,font:{name:FONT,eastAsia:FONT}})
+    ]
+  }));
 
     // Roles
-    (co.roles||[]).forEach(function(r){
-      // Role row: bold italic red C0392B sz20, indent left=240, right-tab date gray sz18
-      ch.push(new Paragraph({
-        tabStops:[{type:TabStopType.RIGHT,position:CW}],
-        spacing:{before:60,after:0},
-        indent:{left:240},
-        children:[
-          new TextRun({text:String(r.title||''),bold:true,italics:true,color:'C0392B',size:20,font:{name:FONT,eastAsia:FONT}}),
-          new TextRun({text:'\t'+String(r.period||''),color:'7F7F7F',size:18,font:{name:FONT,eastAsia:FONT}})
-        ]
-      }));
-      // Bullets
-      (r.bullets||[]).forEach(function(b){ch.push(bul(b));});
-    });
+  (co.roles||[]).forEach(function(r){
+    ch.push(new Paragraph({
+      tabStops:[{type:TabStopType.RIGHT,position:CW}],
+      spacing:{before:60,after:0},
+      indent:{left:240},
+      children:[
+        new TextRun({text:String(r.title||''),bold:true,italics:true,color:'C0392B',size:20,font:{name:FONT,eastAsia:FONT}}),
+        new TextRun({text:'\t'+String(r.period||''),color:'7F7F7F',size:18,font:{name:FONT,eastAsia:FONT}})
+      ]
+    }));
+    (r.bullets||[]).forEach(function(b){ch.push(bul(b));});
   });
+});
 
   if(cvData.certification && cvData.certification.length > 0){
     ch.push(sec('CERTIFICATION'));
