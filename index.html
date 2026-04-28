@@ -593,7 +593,7 @@ function bul(text){
   }
 
   
-//  var doc=new Document({
+  var doc=new Document({
 //    styles:{
 //      paragraphStyles:[{
  //       id:'ListParagraph',
@@ -615,12 +615,12 @@ function bul(text){
  //       }
  //     }]
  //   }]},
- //   sections:[{
- //     properties:{page:{size:{width:11906,height:16838},margin:{top:1134,right:1134,bottom:1134,left:1134}}},
- //    headers:{default:new Header({children:[headerPara]})},
- //     children:ch
- //   }]
- // });
+    sections:[{
+      properties:{page:{size:{width:11906,height:16838},margin:{top:1134,right:1134,bottom:1134,left:1134}}},
+     headers:{default:new Header({children:[headerPara]})},
+      children:ch
+    }]
+  });
 
   var blob=await Packer.toBlob(doc);
   var url=URL.createObjectURL(blob);
