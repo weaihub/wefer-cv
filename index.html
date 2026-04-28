@@ -512,14 +512,16 @@ async function downloadDocx() {
   }
 
   // ── Bullet: • (numId=2, ListParagraph, sz20, left=480 hanging=360) ──
-  function bul(text){
-    return new Paragraph({
-      style:'ListParagraph',
-      numbering:{reference:'wb',level:0},
-      spacing:{before:40,after:40},
-      children:[new TextRun({text:String(text||''),size:20,font:{name:FONT,eastAsia:FONT}})]
-    });
-  }
+function bul(text){
+  return new Paragraph({
+    spacing:{before:40,after:40},
+    indent:{left:480,hanging:360},
+    children:[
+      new TextRun({text:'• ',bold:false,size:20,font:{name:FONT,eastAsia:FONT}}),
+      new TextRun({text:String(text||''),size:20,font:{name:FONT,eastAsia:FONT}})
+    ]
+  });
+}
 
   // ── SUMMARY ──
   ch.push(sec('SUMMARY'));
