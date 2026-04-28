@@ -515,7 +515,7 @@ async function downloadDocx() {
 function bul(text){
   return new Paragraph({
     spacing:{before:40,after:40},
-    indent:{left:100,hanging:200},
+    indent:{left:300,hanging:150},
     children:[
       new TextRun({text:'• ',size:20,font:{name:FONT,eastAsia:FONT}}),
       new TextRun({text:String(text||''),size:20,font:{name:FONT,eastAsia:FONT}})
@@ -575,7 +575,7 @@ function bul(text){
     ch.push(new Paragraph({
       tabStops:[{type:TabStopType.RIGHT,position:CW}],
       spacing:{before:60,after:0},
-      indent:{left:100},
+      indent:{left:150},
       children:[
         new TextRun({text:String(r.title||''),bold:true,italics:true,color:'C0392B',size:20,font:{name:FONT,eastAsia:FONT}}),
         new TextRun({text:'\t'+String(r.period||''),color:'7F7F7F',size:18,font:{name:FONT,eastAsia:FONT}})
