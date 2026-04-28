@@ -515,7 +515,7 @@ async function downloadDocx() {
 function bul(text){
   return new Paragraph({
     spacing:{before:40,after:40},
-    indent:{left:360,hanging:240},
+    indent:{left:200,hanging:200},
     children:[
       new TextRun({text:'• ',size:20,font:{name:FONT,eastAsia:FONT}}),
       new TextRun({text:String(text||''),size:20,font:{name:FONT,eastAsia:FONT}})
@@ -575,7 +575,7 @@ function bul(text){
     ch.push(new Paragraph({
       tabStops:[{type:TabStopType.RIGHT,position:CW}],
       spacing:{before:60,after:0},
-      indent:{left:240},
+      indent:{left:200},
       children:[
         new TextRun({text:String(r.title||''),bold:true,italics:true,color:'C0392B',size:20,font:{name:FONT,eastAsia:FONT}}),
         new TextRun({text:'\t'+String(r.period||''),color:'7F7F7F',size:18,font:{name:FONT,eastAsia:FONT}})
@@ -593,34 +593,34 @@ function bul(text){
   }
 
   
-  var doc=new Document({
-    styles:{
-      paragraphStyles:[{
-        id:'ListParagraph',
-        name:'List Paragraph',
-        basedOn:'Normal',
-        quickFormat:true,
-        paragraph:{indent:{left:480,hanging:360}}
-      }]
-    },
-    numbering:{config:[{
-      reference:'wb',
-      levels:[{
-        level:0,
-        format:LevelFormat.BULLET,
-        text:'\•',
-        alignment:AlignmentType.LEFT,
-        style:{
-          paragraph:{indent:{left:480,hanging:360},spacing:{before:40,after:40}}
-        }
-      }]
-    }]},
-    sections:[{
-      properties:{page:{size:{width:11906,height:16838},margin:{top:1134,right:1134,bottom:1134,left:1134}}},
-      headers:{default:new Header({children:[headerPara]})},
-      children:ch
-    }]
-  });
+//  var doc=new Document({
+//    styles:{
+//      paragraphStyles:[{
+ //       id:'ListParagraph',
+ //       name:'List Paragraph',
+ //       basedOn:'Normal',
+ //       quickFormat:true,
+ //       paragraph:{indent:{left:480,hanging:360}}
+ //     }]
+ //   },
+ //   numbering:{config:[{
+ //     reference:'wb',
+ //     levels:[{
+ //       level:0,
+ //       format:LevelFormat.BULLET,
+ //       text:'\•',
+ //       alignment:AlignmentType.LEFT,
+ //       style:{
+ //         paragraph:{indent:{left:480,hanging:360},spacing:{before:40,after:40}}
+ //       }
+ //     }]
+ //   }]},
+ //   sections:[{
+ //     properties:{page:{size:{width:11906,height:16838},margin:{top:1134,right:1134,bottom:1134,left:1134}}},
+ //    headers:{default:new Header({children:[headerPara]})},
+ //     children:ch
+ //   }]
+ // });
 
   var blob=await Packer.toBlob(doc);
   var url=URL.createObjectURL(blob);
