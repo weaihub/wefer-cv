@@ -579,6 +579,14 @@ async function downloadDocx() {
     });
   });
 
+  if(cvData.certification && cvData.certification.length > 0){
+    ch.push(sec('CERTIFICATION'));
+    cvData.certification.forEach(function(c){
+      ch.push(bul(String(c)));
+    });
+  }
+
+  
   var doc=new Document({
     styles:{
       paragraphStyles:[{
