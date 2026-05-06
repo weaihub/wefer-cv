@@ -167,6 +167,15 @@ const candidateName = parsed.candidateName || '';
 const bulletPoints = parsed.bulletPoints || '';
 const whyFitDetailed = parsed.whyFitDetailed || '';
 
+// Convert bullets to email-safe HTML (Gmail strips white-space:pre-line,
+// so each bullet must be its own block element).
+const bulletPointsHtml = bulletPoints
+  .split('\n')
+  .map(line => line.trim())
+  .filter(line => line.length > 0)
+  .map(line => `<div style="margin-bottom:8px;">${line}</div>`)
+  .join('');
+
 // ───────── Step 8: Detect language from bullets ─────────
 const chineseCharCount = (bulletPoints.match(/[一-鿿]/g) || []).length;
 const totalCharCount = bulletPoints.length;
@@ -239,6 +248,7 @@ output = {
   // External email (Step 3 Gmail)
   candidateName: candidateName,
   bulletPoints: bulletPoints,
+  bulletPointsHtml: bulletPointsHtml,
   emailBody: emailBody,
   subject: subject,
 
