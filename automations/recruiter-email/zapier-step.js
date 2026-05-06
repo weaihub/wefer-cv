@@ -184,6 +184,11 @@ const chineseRatio = totalCharCount > 0 ? chineseCharCount / totalCharCount : 0;
 const detectedLanguage = chineseRatio > 0.2 ? '中文' : 'English';
 console.log(`Detected language: ${detectedLanguage}`);
 
+// ───────── Step 8b: Build language-aware greeting (HTML) ─────────
+const greetingHtml = detectedLanguage === '中文'
+  ? `Hi {HR Name},<br><br>您好，想向您推薦一位候選人 <strong>${candidateName}</strong>，我們評估他與 <strong>${cleanedClient}</strong> 目前的 <strong>${cleanedPosition}</strong> 需求相當契合。履歷已附上，並整理了重點摘要於下方供您參考，謝謝。`
+  : `Hi {HR Name},<br><br>Hope you're doing well! We're pleased to recommend a candidate <strong>${candidateName}</strong> who would fit <strong>${cleanedClient}</strong> for the <strong>${cleanedPosition}</strong> position well. Kindly find the profile attached and the summary below. Cheers!`;
+
 // ───────── Step 9: Build EXTERNAL email body (forward to HR) ─────────
 let emailBody;
 
@@ -249,6 +254,7 @@ output = {
   candidateName: candidateName,
   bulletPoints: bulletPoints,
   bulletPointsHtml: bulletPointsHtml,
+  greetingHtml: greetingHtml,
   emailBody: emailBody,
   subject: subject,
 
