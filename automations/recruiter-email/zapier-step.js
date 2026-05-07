@@ -33,6 +33,7 @@ console.log('motivation:', inputData.motivation ? `[${inputData.motivation.subst
 console.log('candidateEmail:', inputData.candidateEmail || '(not provided)');
 console.log('candidatePhone:', inputData.candidatePhone || '(not provided)');
 console.log('notionPageUrl:', inputData.notionPageUrl || '(not provided)');
+console.log('jobDescription:', inputData.jobDescription ? `[${inputData.jobDescription.length} chars]` : '(not provided)');
 console.log('===========================');
 
 const cvUrl = inputData.cvUrl;
@@ -46,6 +47,12 @@ const motivation = inputData.motivation || '(not provided)';
 const candidateEmail = inputData.candidateEmail || '(not provided)';
 const candidatePhone = inputData.candidatePhone || '(not provided)';
 const notionPageUrl = inputData.notionPageUrl || '';
+
+// Optional JD context (cap at 4000 chars to keep prompt size sane)
+const rawJobDescription = inputData.jobDescription || '';
+const jobDescription = rawJobDescription.length > 4000
+  ? rawJobDescription.substring(0, 4000) + '\n\n[... truncated]'
+  : rawJobDescription;
 
 // ───────── Step 2: Validate critical inputs ─────────
 if (!cvUrl) {
@@ -102,6 +109,7 @@ const userPrompt = `Extract the following from this CV and respond ONLY with a v
 CONTEXT:
 - Client company: ${cleanedClient}
 - Position they're applying for: ${cleanedPosition}
+${jobDescription ? `- Position description / requirements (PRIMARY signal — weight this heavily for the verdict and bullets):\n"""\n${jobDescription}\n"""\n` : '- (Position description not provided — base your verdict on the position title and your general knowledge of the role.)'}
 
 CRITICAL:
 - Output ONLY valid JSON, nothing else. No markdown code fences, no explanation.
