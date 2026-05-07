@@ -94,7 +94,9 @@ const userPrompt = `Extract the following from this CV and respond ONLY with a v
 {
   "candidateName": "Full name in the format '英文名 中文名' (e.g. 'Alson Liu 劉濟瑋'). If only one language available, use just that.",
   "bulletPoints": "Generate 3-4 bullet points starting each line with '• ' (bullet character followed by space) that highlight why this candidate is a strong fit for the position. Each bullet must be ONE complete sentence. Connect candidate's specific experience to the position requirements explicitly. Match the tone of professional recruiting emails — formal but warm. IMPORTANT: Write the bullets in the SAME LANGUAGE as the CV's primary content. If the CV body is in Traditional Chinese, write bullets in Traditional Chinese. If the CV body is in English, write bullets in English. Do NOT include any header or intro text — just the bullet lines starting with '• ', one per line.",
-  "whyFitDetailed": "Write a longer 3-5 sentence paragraph explaining WHY this candidate fits the position. This is for internal KA reference, more detailed than the bullets. Same language as CV. Cover: relevant experience, key achievements, and any unique angle worth highlighting to the client HR."
+  "whyFitDetailed": "Write a longer 3-5 sentence paragraph explaining WHY this candidate fits the position. This is for internal KA reference, more detailed than the bullets. Same language as CV. Cover: relevant experience, key achievements, and any unique angle worth highlighting to the client HR.",
+  "fitVerdict": "ONE of these EXACT English strings (no translation, no other values): 'Strong match', 'Worth a look', or 'Stretch'. Use 'Strong match' when the candidate has direct experience and clearly meets the role requirements. Use 'Worth a look' when fundamentals are good but there are some gaps in seniority, domain, or specific skills. Use 'Stretch' when significant gaps exist but the candidate could still be considered.",
+  "fitVerdictReason": "ONE short sentence (max 25 words) explaining the verdict in plain language. Same language as the bullets. No filler — just the key signal a KA needs to decide whether to read further."
 }
 
 CONTEXT:
@@ -166,6 +168,21 @@ try {
 const candidateName = parsed.candidateName || '';
 const bulletPoints = parsed.bulletPoints || '';
 const whyFitDetailed = parsed.whyFitDetailed || '';
+const fitVerdictRaw = parsed.fitVerdict || 'Worth a look';
+const fitVerdictReason = parsed.fitVerdictReason || '';
+
+// Coerce to one of the 3 allowed buckets (defensive: Claude may drift)
+const allowedVerdicts = ['Strong match', 'Worth a look', 'Stretch'];
+const fitVerdict = allowedVerdicts.includes(fitVerdictRaw) ? fitVerdictRaw : 'Worth a look';
+
+// Build colored verdict callout (HTML) — KA sees this at a glance
+const verdictStyles = {
+  'Strong match': { bg: '#E6F4EA', text: '#1B5E20', accent: '#1B5E20' },
+  'Worth a look': { bg: '#FFF8E1', text: '#8A5A00', accent: '#B26A00' },
+  'Stretch':      { bg: '#F5F5F5', text: '#424242', accent: '#999999' }
+};
+const v = verdictStyles[fitVerdict];
+const fitVerdictHtml = `<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${v.bg};border-left:3px solid ${v.accent};margin-bottom:24px;"><tr><td style="padding:14px 16px;font-family:Arial,Helvetica,sans-serif;"><div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:${v.accent};text-transform:uppercase;letter-spacing:1.5px;font-weight:bold;margin-bottom:4px;">Fit Verdict</div><div style="font-family:Arial,Helvetica,sans-serif;font-size:16px;color:${v.text};font-weight:bold;margin-bottom:6px;">${fitVerdict}</div><div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:${v.text};line-height:1.5;">${fitVerdictReason}</div></td></tr></table>`;
 
 // Convert bullets to email-safe HTML (Gmail strips white-space:pre-line,
 // so each bullet must be its own block element).
@@ -266,5 +283,10 @@ output = {
   detectedLanguage: detectedLanguage,
   cleanedClient: cleanedClient,
   cleanedPosition: cleanedPosition,
-  whyFitDetailed: whyFitDetailed
+  whyFitDetailed: whyFitDetailed,
+
+  // Fit verdict (KA-only signal)
+  fitVerdict: fitVerdict,
+  fitVerdictReason: fitVerdictReason,
+  fitVerdictHtml: fitVerdictHtml
 };
