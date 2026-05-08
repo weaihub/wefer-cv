@@ -101,7 +101,7 @@ const userPrompt = `Extract the following from this CV and respond ONLY with a v
 {
   "candidateName": "Full name in the format '英文名 中文名' (e.g. 'Alson Liu 劉濟瑋'). If only one language available, use just that.",
   "bulletPoints": "Generate 3-4 bullet points starting each line with '• ' (bullet character followed by space) that highlight why this candidate is a strong fit for the position. Each bullet must be ONE complete sentence. Connect candidate's specific experience to the position requirements explicitly. Match the tone of professional recruiting emails — formal but warm. IMPORTANT: Write the bullets in the SAME LANGUAGE as the CV's primary content. If the CV body is in Traditional Chinese, write bullets in Traditional Chinese. If the CV body is in English, write bullets in English. Do NOT include any header or intro text — just the bullet lines starting with '• ', one per line.",
-  "whyFitDetailed": "Generate exactly 3 NUMBERED points. Each line MUST start with '1. ', '2. ', '3. '. Each point is ONE tight sentence, MAX 20 words. Each should include a CONCRETE number, metric, or specific name (years, %, headcount, company, achievement). Cover: (1) JD-must-have match, (2) standout achievement with metric, (3) differentiator. Same language as CV. No paragraph, no header, no filler — just 3 punchy lines.",
+  "whyFitDetailed": "Generate 4-7 NUMBERED points covering BOTH strengths AND concerns/gaps — KAs must see what's good AND what's risky before forwarding to HR. Each line MUST start with the number, period, space, then one of these markers + space: '✓' for a strength (CV maps well to JD) or '⚠' for a concern (gap, missing must-have, salary mismatch, seniority gap, etc.). Format examples: '1. ✓ [strength content]' or '1. ⚠ [concern content]'. Each point is ONE tight sentence, 15-25 words. Include a CONCRETE number, metric, or name where possible (years, %, headcount, company, salary). List strengths first, then concerns. Do NOT skip concerns just to be polite — KAs need risks flagged. Same language as the bullets. No paragraph, no header — just the numbered lines.",
   "fitVerdictReason": "ONE short sentence (max 25 words) explaining the score in plain language. Same language as the bullets. No filler — just the key signal a KA needs.",
   "scoreMustHaves": "Integer 0–30. Score how well the CV covers the JD's required experience, certifications, and explicit must-haves. 0 = none covered, 30 = all covered. Be strict — if a must-have is missing, deduct heavily.",
   "scoreExperience": "Integer 0–25. Score years of experience and seniority match against JD. 0 = far under target, 25 = at or above target with clear seniority signals.",
@@ -221,11 +221,22 @@ const bulletPointsHtml = bulletPoints
   .join('');
 
 // Convert numbered Why-Fit points to email-safe HTML
+// Each line carries a ✓ (strength) or ⚠ (concern) marker — paint the
+// left border accordingly so KAs can scan strengths vs risks fast.
 const whyFitDetailedHtml = whyFitDetailed
   .split('\n')
   .map(line => line.trim())
   .filter(line => line.length > 0)
-  .map(line => `<div style="margin-bottom:10px;">${line}</div>`)
+  .map(line => {
+    const head = line.substring(0, 12);
+    const isStrength = /[✓✔]/.test(head);
+    const isConcern  = /[⚠△!]/.test(head);
+    let style = 'margin-bottom:10px;padding:6px 10px;border-radius:3px;';
+    if (isStrength)      style += 'border-left:3px solid #1B5E20;background-color:#F4FAF5;';
+    else if (isConcern)  style += 'border-left:3px solid #B26A00;background-color:#FFFBF0;';
+    else                 style += 'border-left:3px solid #DDDDDD;';
+    return `<div style="${style}">${line}</div>`;
+  })
   .join('');
 
 // ───────── Step 8: Detect language from bullets ─────────
