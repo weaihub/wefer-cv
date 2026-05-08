@@ -109,7 +109,7 @@ const userPrompt = `Extract the following from this CV and respond ONLY with a v
 CONTEXT:
 - Client company: ${cleanedClient}
 - Position they're applying for: ${cleanedPosition}
-${jobDescription ? `- Position description / requirements (PRIMARY signal — weight this heavily for the verdict and bullets):\n"""\n${jobDescription}\n"""\n` : '- (Position description not provided — base your verdict on the position title and your general knowledge of the role.)'}
+${jobDescription ? `- Position description / requirements (PRIMARY signal — read this FIRST before judging fit):\n"""\n${jobDescription}\n"""\n\nWORKFLOW (when JD is provided):\n1. Read the JD carefully and mentally list its key requirements (responsibilities, must-haves, seniority, domain).\n2. Then read the CV and match candidate's experience against each requirement.\n3. The verdict, bullets, and Why-Fit points MUST explicitly tie back to specific JD requirements. Quote or paraphrase from the JD when relevant.\n4. If the JD lists a must-have the candidate is missing, the verdict cannot be "Strong match" — at best "Worth a look".\n5. Achievements that match JD priorities matter more than generic strengths.` : '- (Position description not provided — base verdict on position title + general role knowledge. Be conservative; default to "Worth a look" unless the title strongly implies fit.)'}
 
 CRITICAL:
 - Output ONLY valid JSON, nothing else. No markdown code fences, no explanation.
