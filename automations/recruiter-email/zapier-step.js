@@ -101,7 +101,7 @@ const userPrompt = `Extract the following from this CV and respond ONLY with a v
 {
   "candidateName": "Full name in the format '英文名 中文名' (e.g. 'Alson Liu 劉濟瑋'). If only one language available, use just that.",
   "bulletPoints": "Generate 3-4 bullet points starting each line with '• ' (bullet character followed by space) that highlight why this candidate is a strong fit for the position. Each bullet must be ONE complete sentence. Connect candidate's specific experience to the position requirements explicitly. Match the tone of professional recruiting emails — formal but warm. IMPORTANT: Write the bullets in the SAME LANGUAGE as the CV's primary content. If the CV body is in Traditional Chinese, write bullets in Traditional Chinese. If the CV body is in English, write bullets in English. Do NOT include any header or intro text — just the bullet lines starting with '• ', one per line.",
-  "whyFitDetailed": "Write a longer 3-5 sentence paragraph explaining WHY this candidate fits the position. This is for internal KA reference, more detailed than the bullets. Same language as CV. Cover: relevant experience, key achievements, and any unique angle worth highlighting to the client HR.",
+  "whyFitDetailed": "Generate 3-4 NUMBERED points explaining WHY this candidate fits. Each line must start with '1. ', '2. ', etc. (number + period + space). Each point ONE complete sentence, 15-30 words. Cover different angles: (1) most relevant experience match, (2) standout achievements with numbers if available, (3) unique differentiator or angle, (4) optional: any concern KA should know. Same language as CV. Do NOT write a paragraph. Do NOT add a header. Just the numbered lines, one per line.",
   "fitVerdict": "ONE of these EXACT English strings (no translation, no other values): 'Strong match', 'Worth a look', or 'Stretch'. Use 'Strong match' when the candidate has direct experience and clearly meets the role requirements. Use 'Worth a look' when fundamentals are good but there are some gaps in seniority, domain, or specific skills. Use 'Stretch' when significant gaps exist but the candidate could still be considered.",
   "fitVerdictReason": "ONE short sentence (max 25 words) explaining the verdict in plain language. Same language as the bullets. No filler — just the key signal a KA needs to decide whether to read further."
 }
@@ -201,6 +201,14 @@ const bulletPointsHtml = bulletPoints
   .map(line => `<div style="margin-bottom:8px;">${line}</div>`)
   .join('');
 
+// Convert numbered Why-Fit points to email-safe HTML
+const whyFitDetailedHtml = whyFitDetailed
+  .split('\n')
+  .map(line => line.trim())
+  .filter(line => line.length > 0)
+  .map(line => `<div style="margin-bottom:10px;">${line}</div>`)
+  .join('');
+
 // ───────── Step 8: Detect language from bullets ─────────
 const chineseCharCount = (bulletPoints.match(/[一-鿿]/g) || []).length;
 const totalCharCount = bulletPoints.length;
@@ -292,6 +300,7 @@ output = {
   cleanedClient: cleanedClient,
   cleanedPosition: cleanedPosition,
   whyFitDetailed: whyFitDetailed,
+  whyFitDetailedHtml: whyFitDetailedHtml,
 
   // Fit verdict (KA-only signal)
   fitVerdict: fitVerdict,
