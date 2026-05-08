@@ -101,9 +101,12 @@ const userPrompt = `Extract the following from this CV and respond ONLY with a v
 {
   "candidateName": "Full name in the format '英文名 中文名' (e.g. 'Alson Liu 劉濟瑋'). If only one language available, use just that.",
   "bulletPoints": "Generate 3-4 bullet points starting each line with '• ' (bullet character followed by space) that highlight why this candidate is a strong fit for the position. Each bullet must be ONE complete sentence. Connect candidate's specific experience to the position requirements explicitly. Match the tone of professional recruiting emails — formal but warm. IMPORTANT: Write the bullets in the SAME LANGUAGE as the CV's primary content. If the CV body is in Traditional Chinese, write bullets in Traditional Chinese. If the CV body is in English, write bullets in English. Do NOT include any header or intro text — just the bullet lines starting with '• ', one per line.",
-  "whyFitDetailed": "Generate 3-4 NUMBERED points explaining WHY this candidate fits. Each line must start with '1. ', '2. ', etc. (number + period + space). Each point ONE complete sentence, 15-30 words. Cover different angles: (1) most relevant experience match, (2) standout achievements with numbers if available, (3) unique differentiator or angle, (4) optional: any concern KA should know. Same language as CV. Do NOT write a paragraph. Do NOT add a header. Just the numbered lines, one per line.",
-  "fitVerdict": "ONE of these EXACT English strings (no translation, no other values): 'Strong match', 'Worth a look', or 'Stretch'. Use 'Strong match' when the candidate has direct experience and clearly meets the role requirements. Use 'Worth a look' when fundamentals are good but there are some gaps in seniority, domain, or specific skills. Use 'Stretch' when significant gaps exist but the candidate could still be considered.",
-  "fitVerdictReason": "ONE short sentence (max 25 words) explaining the verdict in plain language. Same language as the bullets. No filler — just the key signal a KA needs to decide whether to read further."
+  "whyFitDetailed": "Generate exactly 3 NUMBERED points. Each line MUST start with '1. ', '2. ', '3. '. Each point is ONE tight sentence, MAX 20 words. Each should include a CONCRETE number, metric, or specific name (years, %, headcount, company, achievement). Cover: (1) JD-must-have match, (2) standout achievement with metric, (3) differentiator. Same language as CV. No paragraph, no header, no filler — just 3 punchy lines.",
+  "fitVerdictReason": "ONE short sentence (max 25 words) explaining the score in plain language. Same language as the bullets. No filler — just the key signal a KA needs.",
+  "scoreMustHaves": "Integer 0–30. Score how well the CV covers the JD's required experience, certifications, and explicit must-haves. 0 = none covered, 30 = all covered. Be strict — if a must-have is missing, deduct heavily.",
+  "scoreExperience": "Integer 0–25. Score years of experience and seniority match against JD. 0 = far under target, 25 = at or above target with clear seniority signals.",
+  "scoreDomain": "Integer 0–25. Score industry/domain fit (vertical, company stage, market familiarity, regulatory context). 0 = totally different domain, 25 = direct domain match.",
+  "scoreAchievements": "Integer 0–20. Score specific wins/metrics in the CV that map to JD priorities. 0 = no relevant achievements, 20 = multiple impactful achievements directly relevant."
 }
 
 CONTEXT:
@@ -176,21 +179,37 @@ try {
 const candidateName = parsed.candidateName || '';
 const bulletPoints = parsed.bulletPoints || '';
 const whyFitDetailed = parsed.whyFitDetailed || '';
-const fitVerdictRaw = parsed.fitVerdict || 'Worth a look';
 const fitVerdictReason = parsed.fitVerdictReason || '';
 
-// Coerce to one of the 3 allowed buckets (defensive: Claude may drift)
-const allowedVerdicts = ['Strong match', 'Worth a look', 'Stretch'];
-const fitVerdict = allowedVerdicts.includes(fitVerdictRaw) ? fitVerdictRaw : 'Worth a look';
+// Parse + clamp sub-scores
+const clamp = (val, min, max) => Math.max(min, Math.min(max, parseInt(val) || 0));
+const scoreMustHaves    = clamp(parsed.scoreMustHaves, 0, 30);
+const scoreExperience   = clamp(parsed.scoreExperience, 0, 25);
+const scoreDomain       = clamp(parsed.scoreDomain, 0, 25);
+const scoreAchievements = clamp(parsed.scoreAchievements, 0, 20);
+const compatibilityScore = scoreMustHaves + scoreExperience + scoreDomain + scoreAchievements;
 
-// Build colored verdict callout (HTML) — KA sees this at a glance
+// Derive verdict from score (deterministic — single source of truth)
+let fitVerdict;
+if (compatibilityScore >= 80) fitVerdict = 'Strong match';
+else if (compatibilityScore >= 60) fitVerdict = 'Worth a look';
+else fitVerdict = 'Be careful';
+
+// Color palette per verdict (traffic light: green / amber / red)
 const verdictStyles = {
   'Strong match': { bg: '#E6F4EA', text: '#1B5E20', accent: '#1B5E20' },
   'Worth a look': { bg: '#FFF8E1', text: '#8A5A00', accent: '#B26A00' },
-  'Stretch':      { bg: '#F5F5F5', text: '#424242', accent: '#999999' }
+  'Be careful':   { bg: '#FFEBEE', text: '#B71C1C', accent: '#C62828' }
 };
 const v = verdictStyles[fitVerdict];
-const fitVerdictHtml = `<table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid ${v.accent};border-radius:6px;overflow:hidden;margin:0 0 24px 0;"><tr><td style="background-color:${v.accent};padding:10px 16px;font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:bold;color:#FFFFFF;letter-spacing:1.5px;text-transform:uppercase;">合適度評估 Beta</td></tr><tr><td style="background-color:${v.bg};padding:18px 20px;font-family:Arial,Helvetica,sans-serif;"><div style="font-family:Arial,Helvetica,sans-serif;font-size:18px;color:${v.text};font-weight:bold;margin-bottom:6px;">${fitVerdict}</div><div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:${v.text};line-height:1.5;margin-bottom:12px;">${fitVerdictReason}</div><div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:${v.text};line-height:1.5;font-style:italic;border-top:1px dashed ${v.accent};padding-top:10px;opacity:0.85;">※ 系統測試中可能有誤差，請 KA 務必 go through 細節再判斷</div></td></tr></table>`;
+
+// Build score breakdown rows
+const scoreRow = (label, val, max) =>
+  `<tr><td style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:${v.text};padding:4px 0;width:60%;">${label}</td><td style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:${v.text};font-weight:bold;text-align:right;padding:4px 0;">${val}/${max}</td></tr>`;
+const scoreBreakdownHtml = `<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:14px 0 0 0;">${scoreRow('Must-haves', scoreMustHaves, 30)}${scoreRow('Experience', scoreExperience, 25)}${scoreRow('Domain Fit', scoreDomain, 25)}${scoreRow('Achievements', scoreAchievements, 20)}</table>`;
+
+// Build full verdict callout (HTML) — KA sees this at a glance
+const fitVerdictHtml = `<table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid ${v.accent};border-radius:6px;overflow:hidden;margin:0 0 24px 0;"><tr><td style="background-color:${v.accent};padding:10px 16px;font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:bold;color:#FFFFFF;letter-spacing:1.5px;text-transform:uppercase;">合適度評估 Beta &nbsp;&middot;&nbsp; ${compatibilityScore}/100</td></tr><tr><td style="background-color:${v.bg};padding:18px 20px;font-family:Arial,Helvetica,sans-serif;"><div style="font-family:Arial,Helvetica,sans-serif;font-size:18px;color:${v.text};font-weight:bold;margin-bottom:6px;">${fitVerdict}</div><div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:${v.text};line-height:1.5;">${fitVerdictReason}</div>${scoreBreakdownHtml}<div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:${v.text};line-height:1.5;border-top:1px dashed ${v.accent};padding-top:10px;margin-top:14px;opacity:0.9;">評分邏輯&nbsp;&middot;&nbsp; <strong>80+</strong> Strong match &nbsp;&middot;&nbsp; <strong>60–79</strong> Worth a look &nbsp;&middot;&nbsp; <strong>&lt;60</strong> Be careful</div><div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:${v.text};line-height:1.5;font-style:italic;padding-top:8px;opacity:0.85;">※ 系統測試中可能有誤差，請 KA 務必 go through 細節再判斷</div></td></tr></table>`;
 
 // Convert bullets to email-safe HTML (Gmail strips white-space:pre-line,
 // so each bullet must be its own block element).
@@ -305,5 +324,12 @@ output = {
   // Fit verdict (KA-only signal)
   fitVerdict: fitVerdict,
   fitVerdictReason: fitVerdictReason,
-  fitVerdictHtml: fitVerdictHtml
+  fitVerdictHtml: fitVerdictHtml,
+
+  // Compatibility score breakdown
+  compatibilityScore: compatibilityScore,
+  scoreMustHaves: scoreMustHaves,
+  scoreExperience: scoreExperience,
+  scoreDomain: scoreDomain,
+  scoreAchievements: scoreAchievements
 };
