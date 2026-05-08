@@ -190,7 +190,7 @@ const verdictStyles = {
   'Stretch':      { bg: '#F5F5F5', text: '#424242', accent: '#999999' }
 };
 const v = verdictStyles[fitVerdict];
-const fitVerdictHtml = `<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${v.bg};border-left:3px solid ${v.accent};margin-bottom:24px;"><tr><td style="padding:14px 16px;font-family:Arial,Helvetica,sans-serif;"><div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:${v.accent};text-transform:uppercase;letter-spacing:1.5px;font-weight:bold;margin-bottom:4px;">Fit Verdict</div><div style="font-family:Arial,Helvetica,sans-serif;font-size:16px;color:${v.text};font-weight:bold;margin-bottom:6px;">${fitVerdict}</div><div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:${v.text};line-height:1.5;">${fitVerdictReason}</div></td></tr></table>`;
+const fitVerdictHtml = `<table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid ${v.accent};border-radius:6px;overflow:hidden;margin:0 0 24px 0;"><tr><td style="background-color:${v.accent};padding:10px 16px;font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:bold;color:#FFFFFF;letter-spacing:1.5px;text-transform:uppercase;">合適度評估 Beta</td></tr><tr><td style="background-color:${v.bg};padding:18px 20px;font-family:Arial,Helvetica,sans-serif;"><div style="font-family:Arial,Helvetica,sans-serif;font-size:18px;color:${v.text};font-weight:bold;margin-bottom:6px;">${fitVerdict}</div><div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:${v.text};line-height:1.5;">${fitVerdictReason}</div></td></tr></table>`;
 
 // Convert bullets to email-safe HTML (Gmail strips white-space:pre-line,
 // so each bullet must be its own block element).
