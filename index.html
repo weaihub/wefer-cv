@@ -460,7 +460,7 @@ function buildFilename(en,zh,position,presentTo){
   var name=(en||zh||'Candidate').trim();
   var client=safe(presentTo)||'WeFer';
   var pos=safe(position)||'Profile';
-  return client+'-'+pos+'-'+name+'_'+date+'.docx';
+  return client+'-'+pos+'-'+name+'.docx';
 }
 
 // ── Download DOCX (exact WeFer template XML structure) ──
