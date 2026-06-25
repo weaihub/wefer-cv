@@ -457,10 +457,6 @@ function buildFilename(en,zh,position,presentTo){
   // Format: 客戶-職位-人選名_YYMMDD.docx
   var safe=function(s){return String(s||'').trim().replace(/[\/\\:*?"<>|]/g,'');};
   var d=new Date();
-  var yy=String(d.getFullYear()).slice(2);
-  var mm=String(d.getMonth()+1).padStart(2,'0');
-  var dd=String(d.getDate()).padStart(2,'0');
-  var date=yy+mm+dd;
   var name=(en||zh||'Candidate').trim();
   var client=safe(presentTo)||'WeFer';
   var pos=safe(position)||'Profile';
