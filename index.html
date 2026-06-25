@@ -396,8 +396,14 @@ function generate() {
     renderPreview(data);
     setStatus('ok','生成完成');
     document.getElementById('btn-dl').disabled=false;
-    var fn=buildFilename(data.nameEn||'',data.nameZh||'');
-    document.getElementById('dl-hint').textContent=fn;
+    var fn = buildFilename(
+    data.nameEn||'', 
+    data.nameZh||'', 
+    document.getElementById('position').value.trim(),
+    document.getElementById('present-to').value.trim()
+    );
+    document.getElementById('dl-hint').textContent = fn;
+    
 
     btn.disabled=false;
   }
