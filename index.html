@@ -561,6 +561,7 @@ function bul(text){
   }
 
   // ── EXPERIENCE ──
+  ch.push(sec('EXPERIENCE'));   // ← 補這行
 (cvData.experience||[]).forEach(function(co,ci){
   var singleRole = (co.roles||[]).length === 1;
   ch.push(new Paragraph({
