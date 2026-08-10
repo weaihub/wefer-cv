@@ -1,0 +1,148 @@
+<!--
+  WeFer Internal KA Brief Email — GMAIL DESKTOP EDIT-SAFE
+  Same vibe as the external Candidate Recommendation:
+    - Arial, #222222 + #999999 palette
+    - Bordered cards, dark header bar, dashed dividers
+    - Orange WeFer wordmark
+  Differences from external:
+    - Header tagline says "Internal KA Brief"
+    - Red warning strip near top: do NOT forward to HR
+    - Adds: Why Fit (paragraph), Motivation, Salary (Current/Expected),
+      Contact (Email/Phone), Open-in-Notion button
+
+  ──────────────────────────────────────────────────────────────────────
+  ZAPIER STEP 4 — Send Email (Internal KA Brief):
+    To:           Step 1 → Zap_KA Mail Print
+    From Name:    WeFer Team
+    Subject:      Step 2 → briefSubject
+    Body type:    html  ⚠️
+    Body:         paste everything below this comment block
+    Attachments:  (none — CV only goes with the external email)
+
+  ──────────────────────────────────────────────────────────────────────
+  PLACEHOLDER → MAP-TO CHEAT SHEET
+    {{candidateName}}     → Step 1 → 人選姓名  (recruiter-typed)
+    {{cleanedClient}}     → Step 2 → Cleaned Client
+    {{cleanedPosition}}   → Step 2 → Cleaned Position
+    {{recruiterName}}     → Step 1 → Recruiter (Candidate Owner) Name
+    {{fitVerdictHtml}}     → Step 2 → Fit Verdict Html
+    {{whyFitDetailedHtml}} → Step 2 → Why Fit Detailed Html
+    {{motivation}}        → Step 1 → 人選面試動機
+    {{currentSalary}}     → Step 1 → 人選目前薪水架構
+    {{expectedSalary}}    → Step 1 → 人選期待薪水
+    {{candidateEmail}}    → Step 1 → 人選Email
+    {{candidatePhone}}    → Step 1 → 人選電話
+    {{notionPageUrl}}     → Step 1 → Url
+  ──────────────────────────────────────────────────────────────────────
+-->
+
+<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#222222;line-height:1.7;max-width:600px;margin:0 auto;">
+
+<!--===== WEFER HEADER =====-->
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom:2px solid #222222;margin-bottom:16px;">
+<tr>
+<td style="padding:16px 0 12px 0;font-family:Arial,Helvetica,sans-serif;">
+<span style="font-family:Arial,Helvetica,sans-serif;font-size:20px;font-weight:bold;color:#E85D04;letter-spacing:-0.3px;">WeFer</span>
+<span style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#999999;margin-left:6px;letter-spacing:2px;text-transform:uppercase;">Internal KA Brief</span>
+</td>
+</tr>
+</table>
+
+<!--===== INTERNAL WARNING STRIP =====-->
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#FFF5F5;border-left:3px solid #C92A2A;margin-bottom:24px;">
+<tr>
+<td style="padding:10px 14px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#C92A2A;font-weight:bold;letter-spacing:0.3px;">
+&#128274; INTERNAL — Do NOT forward this email to HR. Use the separate &ldquo;[WeFer]&rdquo; email for that.
+</td>
+</tr>
+</table>
+
+<!--===== FIT VERDICT (Claude AI signal) =====-->
+{{fitVerdictHtml}}
+
+<!--===== TOP FACTS BOX =====-->
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #DDDDDD;border-radius:6px;overflow:hidden;margin:0 0 24px 0;">
+
+<tr>
+<td colspan="2" style="background-color:#222222;padding:12px 20px;font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:bold;color:#FFFFFF;letter-spacing:1.5px;text-transform:uppercase;">
+Brief
+</td>
+</tr>
+
+<tr>
+<td style="padding:14px 20px 4px 20px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#999999;text-transform:uppercase;letter-spacing:0.5px;width:35%;vertical-align:top;">Candidate</td>
+<td style="padding:14px 20px 4px 20px;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:bold;color:#222222;">{{candidateName}}</td>
+</tr>
+
+<tr>
+<td style="padding:4px 20px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#999999;text-transform:uppercase;letter-spacing:0.5px;vertical-align:top;">Client</td>
+<td style="padding:4px 20px;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:bold;color:#222222;">{{cleanedClient}}</td>
+</tr>
+
+<tr>
+<td style="padding:4px 20px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#999999;text-transform:uppercase;letter-spacing:0.5px;vertical-align:top;">Position</td>
+<td style="padding:4px 20px;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:bold;color:#222222;">{{cleanedPosition}}</td>
+</tr>
+
+<tr>
+<td style="padding:4px 20px 14px 20px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#999999;text-transform:uppercase;letter-spacing:0.5px;vertical-align:top;">Recruiter</td>
+<td style="padding:4px 20px 14px 20px;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:bold;color:#222222;">{{recruiterName}}</td>
+</tr>
+
+</table>
+
+<!--===== WHY FIT =====-->
+<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#444444;text-transform:uppercase;letter-spacing:1px;font-weight:bold;border-bottom:1px solid #EEEEEE;padding-bottom:6px;margin-bottom:10px;">Why This Candidate Fits</div>
+<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#222222;line-height:1.7;margin-bottom:24px;">{{whyFitDetailedHtml}}</div>
+
+<!--===== MOTIVATION =====-->
+<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#444444;text-transform:uppercase;letter-spacing:1px;font-weight:bold;border-bottom:1px solid #EEEEEE;padding-bottom:6px;margin-bottom:10px;">Candidate&rsquo;s Motivation</div>
+<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#222222;line-height:1.7;margin-bottom:24px;">{{motivation}}</div>
+
+<!--===== SALARY =====-->
+<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#444444;text-transform:uppercase;letter-spacing:1px;font-weight:bold;border-bottom:1px solid #EEEEEE;padding-bottom:6px;margin-bottom:10px;">Salary</div>
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #DDDDDD;border-radius:6px;margin-bottom:24px;">
+<tr>
+<td width="50%" style="padding:14px 20px;border-right:1px solid #DDDDDD;font-family:Arial,Helvetica,sans-serif;vertical-align:top;">
+<div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#999999;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Current</div>
+<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#222222;font-weight:bold;">{{currentSalary}}</div>
+</td>
+<td width="50%" style="padding:14px 20px;font-family:Arial,Helvetica,sans-serif;vertical-align:top;">
+<div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#999999;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Expected</div>
+<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#222222;font-weight:bold;">{{expectedSalary}}</div>
+</td>
+</tr>
+</table>
+
+<!--===== CONTACT =====-->
+<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#444444;text-transform:uppercase;letter-spacing:1px;font-weight:bold;border-bottom:1px solid #EEEEEE;padding-bottom:6px;margin-bottom:10px;">Contact</div>
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #DDDDDD;border-radius:6px;margin-bottom:24px;">
+<tr>
+<td style="padding:10px 20px;border-bottom:1px solid #DDDDDD;font-family:Arial,Helvetica,sans-serif;font-size:14px;">
+<span style="font-family:Arial,Helvetica,sans-serif;color:#999999;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;display:inline-block;width:64px;">Email</span>
+<span style="font-family:Arial,Helvetica,sans-serif;color:#222222;">{{candidateEmail}}</span>
+</td>
+</tr>
+<tr>
+<td style="padding:10px 20px;font-family:Arial,Helvetica,sans-serif;font-size:14px;">
+<span style="font-family:Arial,Helvetica,sans-serif;color:#999999;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;display:inline-block;width:64px;">Phone</span>
+<span style="font-family:Arial,Helvetica,sans-serif;color:#222222;">{{candidatePhone}}</span>
+</td>
+</tr>
+</table>
+
+<!--===== OPEN IN NOTION BUTTON =====-->
+<table cellpadding="0" cellspacing="0" border="0" style="margin:0 0 28px 0;">
+<tr>
+<td style="background-color:#222222;border-radius:4px;">
+<a href="{{notionPageUrl}}" style="display:inline-block;padding:10px 20px;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#FFFFFF;text-decoration:none;font-weight:bold;letter-spacing:0.3px;">Open in Notion &rarr;</a>
+</td>
+</tr>
+</table>
+
+<!--===== FOOTER REMINDER =====-->
+<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#666666;line-height:1.6;border-top:1px dashed #DDDDDD;padding-top:14px;margin-bottom:28px;">
+<span style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#666666;">&#9989; When ready, forward the separate <strong>[WeFer]</strong> external email to HR &mdash; the CV is attached there.</span>
+</div>
+
+</div>
